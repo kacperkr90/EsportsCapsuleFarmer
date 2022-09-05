@@ -1,4 +1,5 @@
 import logging
+import os
 import logging.config
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -38,6 +39,11 @@ def createWebdriver(browser, headless):
     Creates the web driver which is automatically controlled by the program
     """
     match browser:
+        case "remote":
+            options = addWebdriverOptions(webdriver.FirefoxOptions(), headless)
+            options.add_argument('--ignore-ssl-errors=yes')
+            options.add_argument('--ignore-certificate-errors')
+            return webdriver.Remote(command_executor=remoteWdHubUrl, options=options)
         case "chrome":
             driverPath = DriverUpdater.install(path=".", driver_name=DriverUpdater.chromedriver, upgrade=True, check_driver_is_up_to_date=True, old_return=False)
             options = addWebdriverOptions(webdriver.ChromeOptions() , headless)
@@ -87,7 +93,7 @@ def logIn(driver, username, password):
 
     log.info("Logging in")
 
-    wait = WebDriverWait(driver, 20)
+    wait = WebDriverWait(driver, 20 * multiplier)
     usernameInput = wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "input[name=username]")))
     usernameInput.send_keys(username)
     passwordInput = wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "input[name=password]")))
@@ -121,7 +127,7 @@ def setTwitchQuality(driver):
     Sets the Twitch player quality to the last setting in the video quality list.
     This corresponds to setting the video quality to the lowest value.
     """
-    wait = WebDriverWait(driver, 10)
+    wait = WebDriverWait(driver, 10 * multiplier)
     wait.until(ec.frame_to_be_available_and_switch_to_it((By.CSS_SELECTOR, "iframe[title=Twitch]")))
     settingsButton = wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "button[data-a-target=player-settings-button]")))
     driver.execute_script("arguments[0].click();", settingsButton)
@@ -135,7 +141,7 @@ def findRewardsCheckmark(driver):
     """
     Checks if the user is currently eligible to receive rewards.
     """
-    wait = WebDriverWait(driver, 15)
+    wait = WebDriverWait(driver, 15 * multiplier)
     try:
         wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "div[class=status-summary] g")))
     except TimeoutException:
@@ -154,14 +160,17 @@ def checkRewards(driver, url, retries=5):
                 log.info(f"{match} is not eligible for rewards. Retrying...")
                 driver.refresh()
             else:
-                log.warning(f"{match} is not eligible for rewards") 
-    
-    
+                log.warning(f"{match} is not eligible for rewards")
+
+
+def is_true(s=''):
+    return s == 'true'
+
 
 ###################################################
 
 parser = argparse.ArgumentParser(prog='CapsuleFarmer.exe', description='Farm Esports Capsules by watching lolesports.com.')
-parser.add_argument('-b', '--browser', dest="browser", choices=['chrome', 'firefox', 'edge'], default="chrome",
+parser.add_argument('-b', '--browser', dest="browser", choices=['chrome', 'remote', 'firefox', 'edge'], default="chrome",
                     help='Select one of the supported browsers')
 parser.add_argument('-c', '--config', dest="configPath", default="./config.yaml",
                     help='Path to a custom config file')
@@ -204,7 +213,7 @@ try:
         hasAutoLogin = True
     if "headless" in config:
         isHeadless = config["headless"]
-    if "browser" in config and config["browser"] in ['chrome', 'firefox', 'edge']:
+    if "browser" in config and config["browser"] in ['chrome', 'remote', 'firefox', 'edge']:
         browser = config["browser"]
     if "delay" in config:
         delay = int(config["delay"])
@@ -214,6 +223,19 @@ except (yaml.scanner.ScannerError, yaml.parser.ParserError) as e:
     log.warning("Invalid configuration file. IGNORING...")
 except KeyError:
     log.warning("Configuration file is missing mandatory entries. Using default values instead...")
+
+containerised = is_true(os.environ['CONTAINERISED'])
+if containerised:
+    log.info('Capsule Farmer is running in container, will read settings from environment variables...')
+    isHeadless = is_true(os.environ['HEADLESS'])
+    hasAutoLogin = is_true(os.environ['AUTOLOGIN_ENABLED'])
+    browser = os.environ['BROWSER']
+    username = os.environ['USERNAME']
+    password = os.environ['PASSWORD']
+    multiplier = int(os.environ['DELAY_MULTIPLIER'])
+    remoteWdHubUrl = os.environ['REMOTE_WD_HUB_URL']
+    log.info('Read values are: [ headless=%s, autologin=%s, browser=%s, username=%s, password=%s, multiplier=%s, '
+             'remoteWdHubUrl=%s]', isHeadless, hasAutoLogin, browser, username, password, multiplier, remoteWdHubUrl)
 
 if not (isHeadless and hasAutoLogin):
     log.info("Consider using the headless mode for improved performance and stability.")

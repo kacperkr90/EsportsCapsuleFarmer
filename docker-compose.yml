@@ -1,0 +1,18 @@
+version: "3.3"
+services:
+  firefox:
+    restart: always
+    image: seleniarm/standalone-firefox:104.0
+    shm_size: 2g
+    ports:
+      - "4444:4444"
+      - "7900:7900"
+    privileged: true
+  capsule-farmer:
+    restart: always
+    image: esport-capsule-farmer:v1-arm
+    build: .
+    env_file:
+      - api.env
+    depends_on:
+      -   firefox
