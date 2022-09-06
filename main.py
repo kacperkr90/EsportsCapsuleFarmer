@@ -1,4 +1,3 @@
-import logging
 import os
 import logging.config
 from selenium import webdriver
@@ -103,7 +102,7 @@ def logIn(driver, username, password):
     log.info("Credentials submitted")
 
     # check for 2FA
-    time.sleep(5);
+    time.sleep(5)
     if len(driver.find_elements(by=By.CSS_SELECTOR, value="div.text__web-code")) > 0:
         insertTwoFactorCode(driver)
 
@@ -165,6 +164,13 @@ def checkRewards(driver, url, retries=5):
 
 def is_true(s=''):
     return s == 'true'
+
+
+def to_int_or_default(s, default):
+    try:
+        return int(s)
+    except:
+        return default
 
 
 ###################################################
@@ -232,10 +238,12 @@ if containerised:
     browser = os.environ['BROWSER']
     username = os.environ['USERNAME']
     password = os.environ['PASSWORD']
-    multiplier = int(os.environ['DELAY_MULTIPLIER'])
+    multiplier = to_int_or_default(os.environ['WAIT_VALUES_MULTIPLIER'], 1)
     remoteWdHubUrl = os.environ['REMOTE_WD_HUB_URL']
-    log.info('Read values are: [ headless=%s, autologin=%s, browser=%s, username=%s, password=%s, multiplier=%s, '
-             'remoteWdHubUrl=%s]', isHeadless, hasAutoLogin, browser, username, password, multiplier, remoteWdHubUrl)
+    delay = to_int_or_default(os.environ['DELAY_IN_SECONDS'], delay)
+    log.info('Config values: [ headless=%s, autologin=%s, browser=%s, username=%s, password=%s, '
+             'wait_values_multiplier=%s, remoteWdHubUrl=%s, delay=%s]', isHeadless, hasAutoLogin, browser, username,
+             password, multiplier, remoteWdHubUrl, delay)
 
 if not (isHeadless and hasAutoLogin):
     log.info("Consider using the headless mode for improved performance and stability.")
