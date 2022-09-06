@@ -147,7 +147,32 @@ def findRewardsCheckmark(driver):
         return False
     return True
 
+
+def switch_to_twitch(driver):
+    wait = WebDriverWait(driver, 15 * multiplier)
+    wait.until(ec.element_to_be_clickable((By.CSS_SELECTOR, "div.options-button"))).click()
+    wait.until(ec.element_to_be_clickable((By.CSS_SELECTOR, "div.options-list"))).click()
+    try:
+        wait.until(ec.element_to_be_clickable((By.CSS_SELECTOR, "li[data-provider=twitch]"))).click()
+        log.info("Switched to Twitch player")
+    except TimeoutException:
+        log.info("Could not switch to Twitch player. Twitch player wasn't present on stream providers list")
+
+
+def is_not_twitch(driver):
+    wait = WebDriverWait(driver, 15 * multiplier)
+    try:
+        wait.until(ec.presence_of_element_located((By.ID, "video-player-twitch")))
+    except TimeoutException:
+        log.info("Stream not opened in Twitch player, will try to switch to Twitch player...")
+        return True
+    return False
+
+
 def checkRewards(driver, url, retries=5):
+    if is_not_twitch(driver):
+        switch_to_twitch(driver)
+
     splitUrl = url.rsplit('/',1)
     match = splitUrl[1] if 1 < len(splitUrl) else "Match "
     for i in range(retries):
