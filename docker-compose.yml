@@ -11,6 +11,8 @@ services:
     environment:
       - SE_NODE_SESSION_TIMEOUT=1200
       - SE_DRAIN_AFTER_SESSION_COUNT=3
+      - SE_START_XVFB=false
+      - SE_SESSION_RETRY_INTERVAL=60
   capsule-farmer:
     restart: always
     image: esport-capsule-farmer:v1-arm
