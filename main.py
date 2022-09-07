@@ -255,17 +255,17 @@ except (yaml.scanner.ScannerError, yaml.parser.ParserError) as e:
 except KeyError:
     log.warning("Configuration file is missing mandatory entries. Using default values instead...")
 
-containerised = is_true(os.environ['CONTAINERISED'])
+containerised = is_true(os.environ.get('CONTAINERISED', 'false'))
 if containerised:
     log.info('Capsule Farmer is running in container, will read settings from environment variables...')
-    isHeadless = is_true(os.environ['HEADLESS'])
-    hasAutoLogin = is_true(os.environ['AUTOLOGIN_ENABLED'])
-    browser = os.environ['BROWSER']
-    username = os.environ['USERNAME']
-    password = os.environ['PASSWORD']
-    multiplier = to_int_or_default(os.environ['WAIT_VALUES_MULTIPLIER'], 1)
-    remoteWdHubUrl = os.environ['REMOTE_WD_HUB_URL']
-    delay = to_int_or_default(os.environ['DELAY_IN_SECONDS'], delay)
+    isHeadless = is_true(os.environ.get('HEADLESS', 'true'))
+    hasAutoLogin = is_true(os.environ.get('AUTOLOGIN_ENABLED', 'true'))
+    browser = os.environ.get('BROWSER', 'remote')
+    username = os.environ.get('USERNAME')
+    password = os.environ.get('PASSWORD')
+    multiplier = to_int_or_default(os.environ.get('WAIT_VALUES_MULTIPLIER'), 1)
+    remoteWdHubUrl = os.environ.get('REMOTE_WD_HUB_URL')
+    delay = to_int_or_default(os.environ.get('DELAY_IN_SECONDS'), delay)
     log.info('Config values: [ headless=%s, autologin=%s, browser=%s, username=%s, password=%s, '
              'wait_values_multiplier=%s, remoteWdHubUrl=%s, delay=%s]', isHeadless, hasAutoLogin, browser, username,
              password, multiplier, remoteWdHubUrl, delay)
