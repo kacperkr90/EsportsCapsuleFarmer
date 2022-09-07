@@ -78,6 +78,35 @@ The program supports multiple accounts by default. However, if you want to use t
 3. For each account, add path to the account's config file, e.g. `START CapsuleFarmer.exe -c config.account1.yaml`
 4. Run the _.bat_ script
 
+
+# Docker
+
+The program can be run in docker-composed config. This config is meant to be run on ARMv7 architecture devices such as 
+Raspberry Pi. It starts two containers one with the EsportContainerFarmer and another with Selenium Firefox (Firefox was
+used because it used less memory on my device). The program run in `headless` mode so make sure you have disabled 2FA
+for your account. If you have old Raspberry Pi (1GB Ram or less) you should increase your swap memory.
+
+1. Make sure you have [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/install/) installed.
+2. Clone this repository via `git`
+3. Create [api.env](api.env-template) file inside repository directory
+4. Start config via `docker-compose up -d` command
+
+## The `api.env` file 
+
+All environment variables are required when run in docker-composed config.
+
+| Name                   | Description                                                                                                                                                                                                                            |
+|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| CONTAINERISED          | Values `true`, `false`. Has to be set to `true` to inform the program that it's run inside container                                                                                                                                   |
+| HEADLESS               | Values `true`, `false`. `true` if you want to run the program in headless mode. To set it to `false` you have to remove `SE_START_XVFB=false` line from [docker-compose.yml](docker-compose.yml) file.                                 |
+| AUTOLOGIN_ENABLED      | Values `true`, `false`. Has to be set to `true`. You can theoretically set it to `false` with `SE_START_XVFB=false` removed but you will have insert credentials by yourself via Sessions GUI in [selenium hub](http://localhost:4444) |
+| BROWSER                | Set value to `remote` if you are using docker-compose config.                                                                                                                                                                          |
+| USERNAME               | Your username                                                                                                                                                                                                                          |
+| PASSWORD               | Your password                                                                                                                                                                                                                          |
+| REMOTE_WD_HUB_URL      | Selenium hub url, in docker composed config it's `http://firefox:4444/wd/hub`                                                                                                                                                          |
+| WAIT_VALUES_MULTIPLIER | This value is an `Integer` (default `1`). Multiplies `wait` values from the [main.py](main.py) script. You should increase this value if your Raspberry Pi device is too slow. I have set this to `3` on my Raspberry Pi 2 (1GB RAM).  |
+| DELAY_IN_SECONDS       | Delay between checks for new matches. Default is `600` seconds.                                                                                                                                                                        |
+
 ## Common Errors/Issues
 
 - *The Riot Account login page is not loading*
