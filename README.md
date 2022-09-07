@@ -83,7 +83,7 @@ The program supports multiple accounts by default. However, if you want to use t
 
 The program can be run in docker-composed config. This config is meant to be run on ARMv7 architecture devices such as 
 Raspberry Pi. It starts two containers one with the EsportContainerFarmer and another with Selenium Firefox (Firefox was
-used because it used less memory on my device). The program run in `headless` mode so make sure you have disabled 2FA
+used because it used less memory on my device). The program runs in `headless` mode so make sure you have disabled 2FA
 for your account. If you have old Raspberry Pi (1GB Ram or less) you should increase your swap memory.
 
 1. Make sure you have [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/install/) installed.
