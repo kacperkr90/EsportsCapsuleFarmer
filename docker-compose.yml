@@ -13,6 +13,11 @@ services:
       - SE_DRAIN_AFTER_SESSION_COUNT=3
       - SE_START_XVFB=false
       - SE_SESSION_RETRY_INTERVAL=60
+    healthcheck:
+      test: ["CMD", "/opt/bin/check-grid.sh", "--host", "0.0.0.0", "--port", "4444"]
+      interval: 15s
+      timeout: 30s
+      retries: 5
   capsule-farmer:
     restart: always
     image: esport-capsule-farmer:v1-arm
