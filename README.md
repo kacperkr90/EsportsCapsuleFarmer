@@ -79,6 +79,27 @@ The program supports multiple accounts by default. However, if you want to use t
 4. Run the _.bat_ script
 
 
+## Common Errors/Issues
+
+- *The Riot Account login page is not loading*
+  - Simply refresh the page a bunch of times. This is an issue with the website, not the program.
+- *There are warnings / errors but the program runs fine*
+  - You can ignore them. These are most of the time Chrome related warnings and errors. As long as the program runs fine, you can ignore them.
+- *Program crashes immediately*
+  ```
+  Traceback (most recent call last):
+  File "main.py", line 73, in <module>
+  File "chromedriver_autoinstaller\__init__.py", line 20, in install
+  File "chromedriver_autoinstaller\utils.py", line 195, in download_chromedriver
+  File "chromedriver_autoinstaller\utils.py", line 118, in get_chrome_version
+  IndexError: list index out of range
+  [7016] Failed to execute script 'main' due to unhandled exception!
+  ```
+  - You don't have Google Chrome installed.
+- *It doesn't work*
+  - [Have you tried turning it off and on again?](https://www.youtube.com/watch?v=p85xwZ_OLX0)
+
+
 # Docker
 
 The program can be run in docker-composed config. This config is meant to be run on ARMv7 architecture devices such as 
@@ -107,25 +128,14 @@ All environment variables are required when run in docker-composed config.
 | WAIT_VALUES_MULTIPLIER | This value is an `Integer` (default `1`). Multiplies `wait` values from the [main.py](main.py) script. You should increase this value if your Raspberry Pi device is too slow. I have set this to `3` on my Raspberry Pi 2 (1GB RAM).                  |
 | DELAY_IN_SECONDS       | Default is `600` (seconds). Delay between checks for new matches.                                                                                                                                                                                      |
 
-## Common Errors/Issues
+## Updating your composed setup
 
-- *The Riot Account login page is not loading*
-    - Simply refresh the page a bunch of times. This is an issue with the website, not the program.
-- *There are warnings / errors but the program runs fine* 
-    - You can ignore them. These are most of the time Chrome related warnings and errors. As long as the program runs fine, you can ignore them.
-- *Program crashes immediately*
-  ```
-  Traceback (most recent call last):
-  File "main.py", line 73, in <module>
-  File "chromedriver_autoinstaller\__init__.py", line 20, in install
-  File "chromedriver_autoinstaller\utils.py", line 195, in download_chromedriver
-  File "chromedriver_autoinstaller\utils.py", line 118, in get_chrome_version
-  IndexError: list index out of range
-  [7016] Failed to execute script 'main' due to unhandled exception!
-  ```
-    - You don't have Google Chrome installed.
-- *It doesn't work*
-    - [Have you tried turning it off and on again?](https://www.youtube.com/watch?v=p85xwZ_OLX0)
+If there are any new changes in this repository and you want to update your setup, do the following:
+
+1. **git pull** - pull new changes
+2. **docker-compose down** - delete old containers and docker network
+3. **docker-compose build** - rebuild EsportCapsuleFarmer image
+4. **docker-compose up -d** - run config
 
 ## CLI
 ```bash
