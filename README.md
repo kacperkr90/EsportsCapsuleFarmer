@@ -102,7 +102,7 @@ The program supports multiple accounts by default. However, if you want to use t
 
 # Docker
 
-The program can be run in docker-composed config. This config is meant to be run on ARMv7 architecture devices such as 
+The program can be run in docker composed config. This config is meant to be run on ARMv7 architecture devices such as 
 Raspberry Pi. It starts two containers one with the EsportContainerFarmer and another with Selenium Firefox (Firefox was
 used because it used less memory on my device). The program runs in `headless` mode so make sure you have disabled 2FA
 for your account. If you have old Raspberry Pi (1GB Ram or less) you should increase your swap memory.
@@ -110,7 +110,9 @@ for your account. If you have old Raspberry Pi (1GB Ram or less) you should incr
 1. Make sure you have [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/install/) installed.
 2. Clone this repository via `git`
 3. Create [api.env](api.env-template) file inside repository directory
-4. Start config via `docker-compose up -d` command
+4. Start config via `docker compose up -d` command
+
+**IMPORTANT**: You should use docker compose plugin to run this config i.e use `docker compose up` command not `docker-compose up`.
 
 ## The `api.env` file 
 
@@ -123,7 +125,7 @@ All environment variables are required when run in docker-composed config.
 | AUTOLOGIN_ENABLED      | Values `true`, `false`. Default `true`. Has to be set to `true`. You can theoretically set it to `false` with `SE_START_XVFB=false` removed but you will have insert credentials by yourself via Sessions GUI in [selenium hub](http://localhost:4444) |
 | BROWSER                | Default `remote`. Set value to `remote` if you are using docker-compose config.                                                                                                                                                                        |
 | USERNAME               | Your username                                                                                                                                                                                                                                          |
-| PASSWORD               | Your password                                                                                                                                                                                                                                          |
+| PASSWORD               | Your password. If your password contains special characters such as `#` you should wrap your password into single quoutes, i.e. `PASSWORD='your-password'`                                                                                             |
 | REMOTE_WD_HUB_URL      | Selenium hub url, in docker composed config it's `http://firefox:4444/wd/hub`                                                                                                                                                                          |
 | WAIT_VALUES_MULTIPLIER | This value is an `Integer` (default `1`). Multiplies `wait` values from the [main.py](main.py) script. You should increase this value if your Raspberry Pi device is too slow. I have set this to `3` on my Raspberry Pi 2 (1GB RAM).                  |
 | DELAY_IN_SECONDS       | Default is `600` (seconds). Delay between checks for new matches.                                                                                                                                                                                      |
@@ -133,9 +135,9 @@ All environment variables are required when run in docker-composed config.
 If there are any new changes in this repository and you want to update your setup, do the following:
 
 1. **git pull** - pull new changes
-2. **docker-compose down** - delete old containers and docker network
-3. **docker-compose build** - rebuild EsportCapsuleFarmer image
-4. **docker-compose up -d** - run config
+2. **docker compose down** - delete old containers and docker network
+3. **docker compose build** - rebuild EsportCapsuleFarmer image
+4. **docker compose up -d** - run config
 
 ## CLI
 ```bash

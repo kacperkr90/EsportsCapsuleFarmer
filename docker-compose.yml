@@ -1,4 +1,3 @@
-version: "3.3"
 services:
   firefox:
     restart: always
@@ -25,4 +24,5 @@ services:
     env_file:
       - api.env
     depends_on:
-      -   firefox
+      firefox:
+        condition: service_healthy
