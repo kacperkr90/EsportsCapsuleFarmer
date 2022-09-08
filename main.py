@@ -243,9 +243,9 @@ if containerised:
     remoteWdHubUrl = os.environ.get('REMOTE_WD_HUB_URL')
     delay = to_int_or_default(os.environ.get('DELAY_IN_SECONDS'), delay)
     log.info('Config values: [ headless=%s, autologin=%s, browser=%s, '
-             'username=%s, password=*********, wait_values_multiplier=%s, '
-             'remoteWdHubUrl=%s, delay=%s]', isHeadless, hasAutoLogin, browser,
-             username, multiplier, remoteWdHubUrl, delay)
+             'username=*********, password=*********, '
+             'wait_values_multiplier=%s, remoteWdHubUrl=%s, delay=%s]',
+             isHeadless, hasAutoLogin, browser, multiplier, remoteWdHubUrl, delay)
 
 if not (isHeadless and hasAutoLogin):
     log.info("Consider using the headless mode for improved performance and stability.")
