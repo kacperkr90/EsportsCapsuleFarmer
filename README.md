@@ -100,45 +100,53 @@ The program supports multiple accounts by default. However, if you want to use t
   - [Have you tried turning it off and on again?](https://www.youtube.com/watch?v=p85xwZ_OLX0)
 
 
-# Docker
+## Docker
 
 The program can be run in docker composed config. This config is meant to be run on ARMv7 architecture devices such as 
-Raspberry Pi. It starts two containers one with the EsportContainerFarmer and another with Selenium Firefox (Firefox was
-used because it used less memory on my device). The program runs in `headless` mode so make sure you have disabled 2FA
+Raspberry Pi. Setup starts three containers. First with the EsportContainerFarmer. Second with Selenium Firefox (Firefox was
+used because it used less memory on my device) and third with auto-healer bot - it recovers containers in case of failure. The program runs in `headless` mode so make sure you have disabled 2FA
 for your account. If you have old Raspberry Pi (1GB Ram or less) you should increase your swap memory.
 
-1. Make sure you have [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/install/) installed.
-2. Clone this repository via `git`
-3. Create [api.env](api.env-template) file inside repository directory
-4. Start config via `docker compose up -d` command
+### Prerequisities
 
-**IMPORTANT**: You should use docker compose plugin to run this config i.e use `docker compose up` command not `docker-compose up`.
+- [Docker](https://www.docker.com/) engine >= 19.03.0+
+- [Docker Compose](https://docs.docker.com/compose/), supporting Compose File format >= 3.9
 
-## The `api.env` file 
+[Compatibility matrix](https://docs.docker.com/compose/compose-file/compose-versioning/#compatibility-matrix)
+
+### Step by step
+
+1. Clone this repo - `git@github.com:kacperkr90/EsportsCapsuleFarmer.git`
+2. Move to the directory -  `cd EsportsCapsuleFarmer`
+3. Create [api.env](api.env-template) file
+4. Run the tool - `docker-compose up -d`
+
+### The `api.env` file 
 
 All environment variables are required when run in docker-composed config.
 
 | Name                     | Description                                                                                                                                                                                                                                            |
 |--------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| CONTAINERISED            | Values `true`, `false`. Default `false`. Has to be set to `true` to inform the program that it's run inside container                                                                                                                                  |
-| HEADLESS                 | Values `true`, `false`. Default `true`. `true` if you want to run the program in headless mode. To set it to `false` you have to remove `SE_START_XVFB=false` line from [docker-compose.yml](docker-compose.yml) file.                                 |
+| CONTAINERISED            | Values `true`, `false`. Default `false`. Has to be set to `true` to inform the program that it's running inside container                                                                                                                              |
+| HEADLESS                 | Values `true`, `false`. Default `true`. `true` if you want to run the program in headless mode. To set it to `false` you have to remove `SE_START_XVFB=false` lines from [docker-compose.yml](docker-compose.yml) file.                                |
 | AUTOLOGIN_ENABLED        | Values `true`, `false`. Default `true`. Has to be set to `true`. You can theoretically set it to `false` with `SE_START_XVFB=false` removed but you will have insert credentials by yourself via Sessions GUI in [selenium hub](http://localhost:4444) |
 | BROWSER                  | Default `remote`. Set value to `remote` if you are using docker-compose config.                                                                                                                                                                        |
 | USERNAME                 | Your username                                                                                                                                                                                                                                          |
 | PASSWORD                 | Your password. If your password contains special characters such as `#` you should wrap your password into single quoutes, i.e. `PASSWORD='your-password'`                                                                                             |
-| REMOTE_WD_HUB_URL        | Selenium hub url, in docker composed config it's `http://firefox:4444/wd/hub`                                                                                                                                                                          |
-| WAIT_VALUES_MULTIPLIER   | This value is an `Integer` (default `1`). Multiplies `wait` values from the [main.py](main.py) script. You should increase this value if your Raspberry Pi device is too slow. I have set this to `3` on my Raspberry Pi 2 (1GB RAM).                  |
+| REMOTE_WD_HUB_URL        | Selenium hub url. In this docker composed config it's `http://firefox:4444/wd/hub`                                                                                                                                                                     |
+| WAIT_VALUES_MULTIPLIER   | This value is an `Integer` (default `1`). Multiplies `wait` values from the [main.py](main.py) script. You should increase this value if your Raspberry Pi device is low on the resources. I have set this to `3` on my Raspberry Pi 2 (1GB RAM).      |
 | DELAY_IN_SECONDS         | Default is `600` (seconds). Delay between checks for new matches.                                                                                                                                                                                      |
-| SE_NODE_SESSION_TIMEOUT  | Selenium session timeout. The `SE_NODE_SESSION_TIMEOUT` > `DELAY_IN_SECONDS`, i.e. if you set your `DELAY_IN_SECONDS` to `600` then set your `SE_NODE_SESSION_TIMEOUT` to `660`.                                                                       |
+| SE_NODE_SESSION_TIMEOUT  | Selenium session timeout (seconds). The `SE_NODE_SESSION_TIMEOUT` > `DELAY_IN_SECONDS`, i.e. if you set your `DELAY_IN_SECONDS` to `600` then set your `SE_NODE_SESSION_TIMEOUT` to `660`.                                                             |
 
-## Updating your composed setup
+## Updating your Docker Composed setup
 
-If there are any new changes in this repository and you want to update your setup, do the following:
+### Step by step
 
-1. **git pull** - pull new changes
-2. **docker compose down** - delete old containers and docker network
-3. **docker compose build** - rebuild EsportCapsuleFarmer image
-4. **docker compose up -d** - run config
+1. Move to the project directory -  `cd /your/path/to/this/repo`
+2. Pull new changes - `git pull`
+3. Stop and delete docker resources - `docker-compose down`
+4. Rebuild EsportCapsuleFarmer image - `docker-compose build`
+5. Run the tool - `docker-compose up -d`
 
 ## CLI
 ```bash
