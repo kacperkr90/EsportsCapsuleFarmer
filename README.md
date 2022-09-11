@@ -103,9 +103,10 @@ The program supports multiple accounts by default. However, if you want to use t
 ## Docker
 
 The program can be run in docker composed config. This config is meant to be run on ARMv7 architecture devices such as 
-Raspberry Pi. Setup starts three containers. First with the EsportContainerFarmer. Second with Selenium Firefox (Firefox was
-used because it used less memory on my device) and third with auto-healer bot - it recovers containers in case of failure. The program runs in `headless` mode so make sure you have disabled 2FA
-for your account. If you have old Raspberry Pi (1GB Ram or less) you should increase your swap memory.
+Raspberry Pi. Setup starts two containers. The EsportContainerFarmer and Standalone Selenium Firefox (Firefox was
+used because it used less memory on my device). The program runs in `headless` mode so make sure you have disabled 2FA
+for your account. If you have old Raspberry Pi (1GB Ram or less) you should increase your swap memory and increase wait
+time multiplier to at least `3`.
 
 ### Prerequisities
 
@@ -132,19 +133,19 @@ All environment variables are required when run in docker-composed config.
 | AUTOLOGIN_ENABLED        | Values `true`, `false`. Default `true`. Has to be set to `true`. You can theoretically set it to `false` with `SE_START_XVFB=false` removed but you will have insert credentials by yourself via Sessions GUI in [selenium hub](http://localhost:4444) |
 | BROWSER                  | Default `remote`. Set value to `remote` if you are using docker-compose config.                                                                                                                                                                        |
 | USERNAME                 | Your username                                                                                                                                                                                                                                          |
-| PASSWORD                 | Your password. If your password contains special characters such as `#` you should wrap your password into single quoutes, i.e. `PASSWORD='your-password'`                                                                                             |
+| PASSWORD                 | Your password. If your password contains special characters such as `#` you should wrap your password into single quoutes, i.e. `PASSWORD='your#password'`                                                                                             |
 | REMOTE_WD_HUB_URL        | Selenium hub url. In this docker composed config it's `http://firefox:4444/wd/hub`                                                                                                                                                                     |
 | WAIT_VALUES_MULTIPLIER   | This value is an `Integer` (default `1`). Multiplies `wait` values from the [main.py](main.py) script. You should increase this value if your Raspberry Pi device is low on the resources. I have set this to `3` on my Raspberry Pi 2 (1GB RAM).      |
 | DELAY_IN_SECONDS         | Default is `600` (seconds). Delay between checks for new matches.                                                                                                                                                                                      |
-| SE_NODE_SESSION_TIMEOUT  | Selenium session timeout (seconds). The `SE_NODE_SESSION_TIMEOUT` > `DELAY_IN_SECONDS`, i.e. if you set your `DELAY_IN_SECONDS` to `600` then set your `SE_NODE_SESSION_TIMEOUT` to `660`.                                                             |
+| SE_NODE_SESSION_TIMEOUT  | Selenium session timeout (seconds). The `SE_NODE_SESSION_TIMEOUT` > `DELAY_IN_SECONDS`,so if you set your `DELAY_IN_SECONDS` to i.e. `600` then set your `SE_NODE_SESSION_TIMEOUT` to `660`.                                                           |
 
 ## Updating your Docker Composed setup
 
 ### Step by step
 
 1. Move to the project directory -  `cd /your/path/to/this/repo`
-2. Pull new changes - `git pull`
-3. Stop and delete docker resources - `docker-compose down`
+2. Stop and delete docker resources - `docker-compose down`
+3. Pull new changes - `git pull`
 4. Rebuild EsportCapsuleFarmer image - `docker-compose build`
 5. Run the tool - `docker-compose up -d`
 
