@@ -34,6 +34,20 @@ OVERRIDES = {
     "https://lolesports.com/live/european-masters":"https://lolesports.com/live/european-masters/EUMasters"
 }
 
+
+def shutdown_gracefully():
+    def function(func):
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except Exception as err:
+                log.error(err)
+                log.error("Shutting down the program gracefully.")
+                driver.quit()
+        return wrapper
+    return function
+
+
 def createWebdriver(browser, headless):
     """
     Creates the web driver which is automatically controlled by the program
@@ -66,6 +80,8 @@ def addWebdriverOptions(options, headless):
         options.add_argument("--headless")
     return options
 
+
+@shutdown_gracefully()
 def getLiveMatches(driver):
     """
     Fetches all the current/live esports matches on the LoL Esports website.
@@ -80,6 +96,8 @@ def readConfig(filepath):
     with open(filepath, "r",  encoding='utf-8') as f:
         return yaml.safe_load(f)
 
+
+@shutdown_gracefully()
 def logIn(driver, username, password):
     """
     Automatically logs into the user's account on the LoL Esports website.
@@ -122,6 +140,8 @@ def insertTwoFactorCode(driver):
     driver.execute_script("arguments[0].click();", submitButton)
     log.info("Code submitted")
 
+
+@shutdown_gracefully()
 def setTwitchQuality(driver):
     """
     Sets the Twitch player quality to the last setting in the video quality list.
@@ -148,6 +168,8 @@ def findRewardsCheckmark(driver):
         return False
     return True
 
+
+@shutdown_gracefully()
 def checkRewards(driver, url, retries=5):
     splitUrl = url.rsplit('/',1)
     match = splitUrl[1] if 1 < len(splitUrl) else "Match "
