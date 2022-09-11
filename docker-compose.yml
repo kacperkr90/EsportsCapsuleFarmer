@@ -17,6 +17,7 @@ services:
       - SE_START_XVFB=false
       - START_XVFB=false
       - SE_NODE_MAX_SESSIONS=2
+      - SE_JAVA_OPTS=-Xmx256m
     healthcheck:
       test: ["CMD", "/opt/bin/check-grid.sh", "--host", "0.0.0.0", "--port", "4444"]
       interval: 5s
