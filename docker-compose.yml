@@ -3,44 +3,27 @@ services:
     restart: always
     image: seleniarm/standalone-firefox:104.0
     container_name: selenium_firefox
-    labels:
-      farmer: "true"
     shm_size: 2g
+    mem_limit: 512m
+    mem_reservation: 256m
+    cpus: 1
     ports:
       - "4444:4444"
       - "7900:7900"
-    privileged: true
     env_file:
       - api.env
     environment:
       - SE_DRAIN_AFTER_SESSION_COUNT=3
       - SE_START_XVFB=false
       - START_XVFB=false
-      - SE_NODE_MAX_SESSIONS=2
       - SE_JAVA_OPTS=-Xmx256m
-    healthcheck:
-      test: ["CMD", "/opt/bin/check-grid.sh", "--host", "0.0.0.0", "--port", "4444"]
-      interval: 5s
-      timeout: 30s
-      retries: 5
   capsule-farmer:
     restart: always
     image: esport-capsule-farmer:v1-arm
     container_name: capsule_farmer
+    mem_limit: 50m
     build: .
     env_file:
       - api.env
     depends_on:
-      firefox:
-        condition: service_healthy
-  autoheal:
-    restart: always
-    image: willfarrell/autoheal
-    container_name: farmer_autoheal
-    volumes:
-      - '/var/run/docker.sock:/var/run/docker.sock'
-    environment:
-      - AUTOHEAL_CONTAINER_LABEL=farmer
-    depends_on:
-      firefox:
-        condition: service_healthy
+      - firefox

@@ -1,5 +1,8 @@
+import json
 import os
 import logging.config
+from urllib import request
+from urllib.error import URLError
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -48,12 +51,27 @@ def shutdown_gracefully():
     return function
 
 
+def wait_for_selenium_grid():
+    while True:
+        try:
+            log.info('Waiting for Selenium grid to be ready...')
+            res = request.urlopen(remoteWdHubUrl + "/status")
+            json_response = json.loads(res.read().decode())
+            if json_response.get('value', {}).get('ready', False):
+                log.info('Selenium grid is ready')
+                return True
+        except URLError:
+            pass
+        time.sleep(5)
+
+
 def createWebdriver(browser, headless):
     """
     Creates the web driver which is automatically controlled by the program
     """
     match browser:
         case "remote":
+            wait_for_selenium_grid()
             options = addWebdriverOptions(webdriver.FirefoxOptions(), headless)
             options.add_argument('--ignore-ssl-errors=yes')
             options.add_argument('--ignore-certificate-errors')
