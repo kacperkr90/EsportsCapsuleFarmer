@@ -198,7 +198,7 @@ def checkRewards(driver, url, retries=5):
         else:
             if i < 4:
                 log.info(f"{match} is not eligible for rewards. Retrying...")
-                driver.refresh()
+                driver.get(url)
             else:
                 log.warning(f"{match} is not eligible for rewards")
 
