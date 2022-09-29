@@ -19,6 +19,7 @@ from datetime import datetime, timedelta
 
 # Force Twitch player
 OVERRIDES = {
+    "https://lolesports.com/live/worlds/":"https://lolesports.com/live/worlds/riotgames",
     "https://lolesports.com/live/lck_challengers_league":"https://lolesports.com/live/lck_challengers_league/lckcl",
     "https://lolesports.com/live/lpl":"https://lolesports.com/live/lpl/lpl",
     "https://lolesports.com/live/lck":"https://lolesports.com/live/lck/lck",
