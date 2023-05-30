@@ -1,0 +1,8 @@
+services:
+  firefox:
+    image: selenium/standalone-firefox:112.0
+  capsule-farmer:
+    image: esport-capsule-farmer:v1
+    build:
+      context: .
+      dockerfile: synology.Dockerfile

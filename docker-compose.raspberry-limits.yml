@@ -1,0 +1,7 @@
+services:
+  firefox:
+    mem_limit: 512m
+    mem_reservation: 256m
+    cpus: 1
+  capsule-farmer:
+    mem_limit: 50m

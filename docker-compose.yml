@@ -4,9 +4,6 @@ services:
     image: seleniarm/standalone-firefox:104.0
     container_name: selenium_firefox
     shm_size: 2g
-    mem_limit: 512m
-    mem_reservation: 256m
-    cpus: 1
     ports:
       - "4444:4444"
       - "7900:7900"
@@ -21,7 +18,6 @@ services:
     restart: always
     image: esport-capsule-farmer:v1-arm
     container_name: capsule_farmer
-    mem_limit: 50m
     build: .
     env_file:
       - api.env

@@ -120,7 +120,8 @@ time multiplier to at least `3`.
 1. Clone this repo - `git@github.com:kacperkr90/EsportsCapsuleFarmer.git`
 2. Move to the directory -  `cd EsportsCapsuleFarmer`
 3. Create [api.env](api.env-template) file
-4. Run the tool - `docker-compose up -d`
+4. Run the tool - `docker-compose -f docker-compose.yml -f docker-compose.raspberry-limits.yml up -d`
+5. To run on Synology:  `docker-compose -f docker-compose.yml -f docker-compose.synology.yml up -d`
 
 ### The `api.env` file 
 
@@ -147,7 +148,7 @@ All environment variables are required when run in docker-composed config.
 2. Stop and delete docker resources - `docker-compose down`
 3. Pull new changes - `git pull`
 4. Rebuild EsportCapsuleFarmer image - `docker-compose build`
-5. Run the tool - `docker-compose up -d`
+5. Run the tool - `docker-compose -f docker-compose.yml -f docker-compose.raspberry-limits.yml up -d`
 
 ## CLI
 ```bash
