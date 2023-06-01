@@ -33,7 +33,7 @@ class Match:
         self.log = log
         self.driver = driver
         self.rewards = Rewards(log=log, driver=driver, multiplier=multiplier)
-        self.twitch = Twitch(driver=driver, multiplier=multiplier)
+        self.twitch = Twitch(log=log, driver=driver, multiplier=multiplier)
 
         self.currentWindows = {}
         self.originalWindow = self.driver.current_window_handle

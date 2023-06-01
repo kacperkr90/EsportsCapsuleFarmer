@@ -4,7 +4,8 @@ from selenium.webdriver.common.by import By
 from EsportsCapsuleFarmer.Container.TearDown import shutdown_gracefully
 
 class Twitch:
-    def __init__(self, driver, multiplier) -> None:
+    def __init__(self, log, driver, multiplier) -> None:
+        self.log = log
         self.driver = driver
         self.multiplier = multiplier
 
